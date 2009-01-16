@@ -2,7 +2,7 @@ LDFLAGS := -lncurses
 OBJS = otp.o tcp.o mrchat.o
 CC = GCC
 
-all: mrchat keygen
+all: mrchat
 
 mrchat: $(OBJS)
 	$(CC) $(LDFLAGS) -o mrchat $(OBJS)
