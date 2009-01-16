@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "common.h"
-#include "OTP.h"
+#include "otp.h"
 
-char** OTP_prep_stat( char **stat, int *statCount, int size )
+char** otp_prep_stat( char **stat, int *statCount, int size )
 {
 	*statCount += OTP_END*2;
 	
@@ -39,10 +39,10 @@ char** OTP_prep_stat( char **stat, int *statCount, int size )
 }
 
 
-struct OTP_key *OTP_init( char* keyFile )
+struct otp_key *otp_init( char* keyFile )
 {
     FILE *fpKey;
-    struct OTP_key *key = (struct OTP_key *)calloc( 1, sizeof( struct OTP_key ) );
+    struct otp_key *key = (struct otp_key *)calloc( 1, sizeof( struct otp_key ) );
 
     printf( "::One Time Pad::\n" );
     
@@ -67,41 +67,32 @@ struct OTP_key *OTP_init( char* keyFile )
     else
     	printf( "\tUsing key file: %s\n", key->file );
 
-    key->size = getSize( fpKey );
+    key->size = getsize( fpKey );
     printf( "\tKey Size:%i\n", key->size );
     
-    #ifdef DEBUG
-    	f_printf( "OTP Initialization" );
-    	i_printf( "\tKey Size:", key->size );
-    #endif
-
     /* Shutdown */
     fclose( fpKey );
     
     return key;
 }
 
-char getChar( FILE* fpKey, long long int pos )
+char get_char( FILE* fpKey, long long int pos )
 {
 	fseek( fpKey, pos, SEEK_SET );
 	
 	return getc( fpKey );
 }
 
-struct vector *OTP_encrypt( struct vector *input, struct OTP_key *ctx )
+struct vector *otp_encrypt( struct vector *input, struct otp_key *ctx )
 {
         int i;
 	FILE *fpKey;
 
 	fpKey = fopen( ctx->file, "r" );
 	
-	#ifdef DEBUG
-		d_printf( "OTP::OTP_encrypt", input->buf, input->size );
-	#endif
-	
 	for( i = 0; i < input->size; i++ )
 	{
-		input->buf[ i ] = ( input->buf[ i ] + getChar( fpKey, ctx->pos++ ) ) % 256;
+		input->buf[ i ] = ( input->buf[ i ] + get_char( fpKey, ctx->pos++ ) ) % 256;
 	}
 
 	fclose( fpKey );
@@ -109,14 +100,14 @@ struct vector *OTP_encrypt( struct vector *input, struct OTP_key *ctx )
         return input;
 }
 
-struct vector *OTP_decrypt( struct vector *input, struct OTP_key *ctx )
+struct vector *otp_decrypt( struct vector *input, struct otp_key *ctx )
 {
         int i;
 	FILE *fpKey = fopen( ctx->file, "r" );
 	
 	for( i = 0; i < input->size; i++ )
 	{
-		input->buf[ i ] = ( input->buf[ i ] - getChar( fpKey, ctx->pos++ ) ) % 256;
+		input->buf[ i ] = ( input->buf[ i ] - get_char( fpKey, ctx->pos++ ) ) % 256;
 	}
 	
 	if( ctx->pos == ctx->size ) exit( -1 );
@@ -126,13 +117,22 @@ struct vector *OTP_decrypt( struct vector *input, struct OTP_key *ctx )
         return input;
 }
 
-int OTP_update_stat( char** stat, int statCount, void *pattr, int size )
+int otp_update_stat( char** stat, int statCount, void *pattr, int size )
 {
-	struct OTP_key *ctx = (struct OTP_key *)pattr;
+	struct otp_key *ctx = (struct otp_key *)pattr;
 
 	snprintf( stat[ statCount - (OTP_END - OTP_FILE)*2 + 1 ], size, "%s", ctx->file );
 	snprintf( stat[ statCount - (OTP_END - OTP_POS)*2 + 1 ], size, "%i", ctx->pos );
 	snprintf( stat[ statCount - (OTP_END - OTP_SIZE)*2 + 1 ], size, "%i", ctx->size );
 	
 	return 0; 
+}
+
+int getsize(FILE* fp )
+{
+	unsigned long int size;
+    fseek( fp, 0, SEEK_END );
+    size = ftell( fp ) - 1;
+    rewind( fp );
+    return size;
 }

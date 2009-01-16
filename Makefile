@@ -1,5 +1,6 @@
 LDFLAGS := -lncurses
 OBJS = debug.o deskap.o OTP.o TCP_normal.o mrchat.o
+CC = GCC
 
 all: mrchat keygen
 

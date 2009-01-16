@@ -25,9 +25,11 @@ enum
 	OTP_END
 };
 
-struct OTP_key 
+struct otp_key 
 {
 	char *file;
 	long long int pos;
 	long long int size;
 };
+
+int getsize(FILE*);

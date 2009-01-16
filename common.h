@@ -49,27 +49,21 @@ struct vector
 	char* logFile;
 #endif
 
-/* Cipher Function Declairations */
-char			**deskap_prep_stat( char **, int *, int );
-int 			deskap_update_stat( char**, int, void *, int );
-struct deskap_key	*deskap_init( char* );
-struct vector		*deskap_encrypt( struct vector*, struct deskap_key* );
-struct vector		*deskap_decrypt( struct vector*, struct deskap_key* );
-
-char		**OTP_prep_stat( char **, int *, int );
-int 		OTP_update_stat( char**, int, void *, int );
-struct OTP_key	*OTP_init( char* );
-struct vector	*OTP_encrypt( struct vector *, struct OTP_key * );
-struct vector	*OTP_decrypt( struct vector *, struct OTP_key * );
+/* otp */
+char		**otp_prep_stat( char **, int *, int );
+int 		otp_update_stat( char**, int, void *, int );
+struct otp_key	*otp_init( char* );
+struct vector	*otp_encrypt( struct vector *, struct otp_key * );
+struct vector	*otp_decrypt( struct vector *, struct otp_key * );
 
 /* Network Function Declairations */
-char** TCP_normal_prep_stat( char **stat, int *statCount, int size );
-int TCP_normal_update_stat( char** stat, void *attr, int size );
-struct TCP_normal_attr *TCP_normal_connect( char *sAttr );
-struct TCP_normal_attr *TCP_normal_listen( char *sAttr );
-int TCP_normal_close( struct TCP_normal_attr *attr );
-int TCP_normal_write( struct TCP_normal_attr *s, struct vector *input, char opts );
-int TCP_normal_read( struct TCP_normal_attr *attr, struct vector *input, unsigned int maxsize, char opts );
+char** tcp_prep_stat( char **stat, int *statCount, int size );
+int tcp_update_stat( char** stat, void *attr, int size );
+struct tcp_attr *tcp_connect( char *sAttr );
+struct tcp_attr *tcp_listen( char *sAttr );
+int tcp_close( struct tcp_attr *attr );
+int tcp_write( struct tcp_attr *s, struct vector *input, char opts );
+int tcp_read( struct tcp_attr *attr, struct vector *input, unsigned int maxsize, char opts );
 
 #ifdef DEBUG
 	char* logFile;
