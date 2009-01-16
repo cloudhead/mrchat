@@ -304,7 +304,6 @@ int main( int argc, char *argv[] )
 					}
 					else
 					{
-						clr_msg_box();
 					}
 				}
 				else if( u.msg->buf[ 0 ] )
