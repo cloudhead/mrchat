@@ -1,5 +1,5 @@
 LDFLAGS := -lncurses
-OBJS = debug.o deskap.o OTP.o TCP_normal.o mrchat.o
+OBJS = otp.o tcp.o mrchat.o
 CC = GCC
 
 all: mrchat keygen
@@ -7,21 +7,12 @@ all: mrchat keygen
 mrchat: $(OBJS)
 	$(CC) $(LDFLAGS) -o mrchat $(OBJS)
 
-keygen:
-	$(CC) -o keygen keygen.c
+otp.o:
+	$(CC) -c otp.c
 
-debug.o:
-	$(CC) -c debug.c
-
-deskap.o: debug.o
-	$(CC) -c deskap.c
-
-OTP.o: debug.o
-	$(CC) -c OTP.c
-
-TCP_normal.o: debug.o
-	$(CC) -c TCP_normal.c
+tcp.o:
+	$(CC) -c tcp.c
 
 clean:
-	rm mrchat keygen $(OBJS)
+	rm mrchat $(OBJS)
 

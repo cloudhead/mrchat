@@ -59,7 +59,7 @@ int main( int argc, char *argv[] )
     struct Network	*network = &networks[ 0 ];
     
     char ans, arg;
-    char *temp[2] = { NULL };
+    char *temp[ 2 ] = { NULL };
     int c, i = 1, n = 0;
     int show_stat = FALSE;
     char verbose_flag = FALSE;
@@ -284,7 +284,6 @@ int main( int argc, char *argv[] )
 					update_buf( &s, &v );
 					print_buf( &s, &v, chatwin );
 					update_status( &s, statwin );
-					//bzero( v.msg, strlen( v.msg ) );
 				}
 				else if( i == -1 )
 					goto end;
@@ -297,37 +296,15 @@ int main( int argc, char *argv[] )
 						goto end;
 					else if( strcmp( u.msg->buf, CMD_PING ) == 0 )
 					{
-						//sprintf( cmd, "ping %s", ip );
-						//cmd = system( cmd );
-						//print_msg( cmd );
+
 					}
 					else if( strstr( u.msg->buf, CMD_ENC ) )
 					{
-						/* Good way of handling messages before this should be used (init probs) */
-						/*
-						strtok( u.msg->buf, " \t" );
-						
-						if( temp[ 1 ] = strtok( NULL, " \t" ) )
-						{
-							free( ctx );
-							
-							for( i = 0; ciphers[i].name != NULL; i++ )
-								if( strcmp( ciphers[i].name, temp[ 1 ] ) == 0 )
-								{
-									cipher = &ciphers[ i ];
-									break;
-								}
-					
-							if( cipher->init != NULL )
-								ctx = cipher->init( temp[ 0 ] = strtok( NULL, " \t\n" ) );
-						}
-						*/
+
 					}
 					else
 					{
-						//clr_msg_box();
-						//print_msg( "" );
-						//update_buf( &s, (struct vector *){ "Problem avec le dumbass", strlen( "Problem avec le dumbass" ) } );
+						clr_msg_box();
 					}
 				}
 				else if( u.msg->buf[ 0 ] )
