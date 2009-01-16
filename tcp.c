@@ -34,15 +34,15 @@ char** tcp_prep_stat( char **stat, int *statCount, int size )
 {
 	int i = *statCount;
 	
-	*statCount += TCP_NORMAL_END*2;
+	*statCount += TCP_NORMAL_END * 2;
 	if( ( stat = (char**)realloc( stat, (*statCount)*sizeof(char**) ) ) == NULL )
 		exit( -1 );
 	
-	stat[ (STAT_END+TCP_NORMAL_PEER)*2 ] = "Peer IP:";
-	stat[ (STAT_END+TCP_NORMAL_PORT)*2 ] = "Port:";
+	stat[ (STAT_END+TCP_NORMAL_PEER) * 2 ] = "Peer IP:";
+	stat[ (STAT_END+TCP_NORMAL_PORT) * 2 ] = "Port:";
 
-	for(;i < *statCount; i+=2 )
-		stat[ i+1 ] = calloc( size, 1 );
+	for(; i < *statCount; i += 2 )
+		stat[ i + 1 ] = calloc( size, 1 );
 
 	return stat;
 }
@@ -64,9 +64,9 @@ struct tcp_attr *tcp_connect( char *sAttr )
 
 	printf( "tcp_connect:\n" );
 
-        temp_ = temp;
+	temp_ = temp;
 	
-        if( sAttr == NULL )
+	if( sAttr == NULL )
 	{
 		printf( "Enter IP [PORT]:" );
 		scanf( "%21s", temp );
@@ -80,7 +80,7 @@ struct tcp_attr *tcp_connect( char *sAttr )
 	else
 		sscanf( sAttr, "%15s %i", ip_address, &port );
         
-        free(temp_);
+	free(temp_);
         
 	attr->local.sin_addr.s_addr = INADDR_ANY;
 	attr->local.sin_family = attr->peer.sin_family = AF_INET;
@@ -188,10 +188,10 @@ struct tcp_attr *tcp_listen( char *sAttr )
 
 	return attr;
 	
-	exit:
-		close( attr->sock );
-		free( attr );
-		return NULL;
+exit:
+	close( attr->sock );
+	free( attr );
+	return NULL;
 }
 
 int tcp_read( struct tcp_attr *attr, struct vector *input, unsigned int maxsize, char opts )
@@ -209,43 +209,33 @@ int tcp_read( struct tcp_attr *attr, struct vector *input, unsigned int maxsize,
 
     if( !opts )
     {
-	/*
-	while( ( check = select( attr->sock + 1, &sock, NULL, NULL, &tv ) ) > 0 )
-	{
-		if( ( r = read( attr->sock, &input->buf[ i ], maxsize - i ) ) == 0 ) 
-			break;
-	
-		i += r;
-	}
-	*/
-
-	for( i = 0; ( check = select( attr->sock + 1, &sock, NULL, NULL, &tv ) ) > 0
-		&& ( r = read( attr->sock, &input->buf[ i ], maxsize - i ) ) > 0; i += r );
-	
-	if( check == -1 )
-	{
-		switch( errno )
+		for( i = 0; ( check = select( attr->sock + 1, &sock, NULL, NULL, &tv ) ) > 0
+			&& ( r = read( attr->sock, &input->buf[ i ], maxsize - i ) ) > 0; i += r );
+		
+		if( check == -1 )
 		{
-			case EBADF:
-				printf( "Invalid File Descriptor" );
-				break;
-			case EINTR:
-				printf( "A signal was caught" );
-				break;
-			case ENOMEM:
-				printf( "Unabe to allocate fuckign memory" );
-				break;
-			default:
-				break;
+			switch( errno )
+			{
+				case EBADF:
+					printf( "Invalid File Descriptor" );
+					break;
+				case EINTR:
+					printf( "A signal was caught" );
+					break;
+				case ENOMEM:
+					printf( "Unabe to allocate fuckign memory" );
+					break;
+				default:
+					break;
+			}
 		}
-	}
-	if( r == 0 ) return -1;
+		if( r == 0 ) return -1;
     }
     else
     {
     	for( i = 0; i < maxsize 
 		&& ( r = read( attr->sock, &input->buf[ i ], maxsize - i ) ) > 0; i += r );
-	if( r == 0 ) return -1;
+		if( r == 0 ) return -1;
     }
 
     if( i > 0 )
