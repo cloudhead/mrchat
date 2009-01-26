@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "tcp.h"
 
 #include <errno.h>
@@ -38,8 +39,8 @@ char** tcp_prep_stat( char **stat, int *statCount, int size )
 	if( ( stat = (char**)realloc( stat, (*statCount)*sizeof(char**) ) ) == NULL )
 		exit( -1 );
 	
-	stat[ (STAT_END+TCP_NORMAL_PEER) * 2 ] = "Peer IP:";
-	stat[ (STAT_END+TCP_NORMAL_PORT) * 2 ] = "Port:";
+	stat[ (STAT_END + TCP_NORMAL_PEER) * 2 ] = "Peer IP:";
+	stat[ (STAT_END + TCP_NORMAL_PORT) * 2 ] = "Port:";
 
 	for(; i < *statCount; i += 2 )
 		stat[ i + 1 ] = calloc( size, 1 );
@@ -55,6 +56,11 @@ int tcp_close( struct tcp_attr *attr )
 	return 1;
 }
 
+/**
+ *
+ *  CONNECT
+ *
+ */
 struct tcp_attr *tcp_connect( char *sAttr )
 {
 	struct tcp_attr *attr = calloc( 1, sizeof( struct tcp_attr ) );
@@ -123,6 +129,11 @@ struct tcp_attr *tcp_connect( char *sAttr )
 	return attr;
 }
 
+/**
+ *
+ *  LISTEN
+ *
+ */
 struct tcp_attr *tcp_listen( char *sAttr )
 {
 	struct tcp_attr *attr = calloc( 1, sizeof( struct tcp_attr ) );
@@ -194,6 +205,11 @@ exit:
 	return NULL;
 }
 
+/**
+ *
+ *  READ
+ *
+ */
 int tcp_read( struct tcp_attr *attr, struct vector *input, unsigned int maxsize, char opts )
 {
     unsigned int i = 0;
@@ -233,8 +249,8 @@ int tcp_read( struct tcp_attr *attr, struct vector *input, unsigned int maxsize,
     }
     else
     {
-    	for( i = 0; i < maxsize 
-		&& ( r = read( attr->sock, &input->buf[ i ], maxsize - i ) ) > 0; i += r );
+    	for( i = 0; i < maxsize && 
+            ( r = read( attr->sock, &input->buf[ i ], maxsize - i ) ) > 0; i += r );
 		if( r == 0 ) return -1;
     }
 
@@ -247,6 +263,11 @@ int tcp_read( struct tcp_attr *attr, struct vector *input, unsigned int maxsize,
     return i;
 }
 
+/**
+ *
+ *  WRITE
+ *
+ */
 int tcp_write( struct tcp_attr *s, struct vector *input, char opts )
 {
    return write( s->sock, input->buf, input->size );
@@ -257,10 +278,10 @@ int tcp_update_stat( char** stat, void *pattr, int size )
 	struct tcp_attr *attr = pattr;
 	
 	/* Client IP */
-	strncpy( stat[ (STAT_END + TCP_NORMAL_PEER)*2 + 1 ], inet_ntoa( attr->peer.sin_addr ), size );
+	strncpy( stat[ (STAT_END + TCP_NORMAL_PEER) * 2 + 1 ], inet_ntoa( attr->peer.sin_addr ), size );
 
 	/* Port */
-	snprintf( stat[ (STAT_END + TCP_NORMAL_PORT)*2 + 1 ], size, "%i", ntohs( attr->local.sin_port ) );
+	snprintf( stat[ (STAT_END + TCP_NORMAL_PORT) * 2 + 1 ], size, "%i", ntohs( attr->local.sin_port ) );
 
 	return 0;
 }
