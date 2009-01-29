@@ -409,20 +409,27 @@ int print_buf( struct session *s, struct user *u, WINDOW* chatwin )
     wclear( chatwin );
     box( chatwin, 0, 0 );
 
-    if( WIN_CHAT_H > s->end ) pos = 0;
-    else pos = s->end - ( WIN_CHAT_H - 2 );
-
-    for( i = 0; i < WIN_CHAT_H - 2 && s->buf[ pos + i ]; i++ )
+    if( s->buf[ WIN_CHAT_H - 1 ] )
+	{
+		pos = s->end - ( WIN_CHAT_H - 2 );
+		
+		if( pos < 0 )
+			pos += BUF_SIZE;
+	}
+	else
+		pos = 0;
+	
+    for( i = 0; i < WIN_CHAT_H - 2 && s->buf[ (pos + i) % BUF_SIZE ]; i++ )
     {
 		if( s->buf[ pos + i ][ 0 ] == '%' )
 		{
 			wattron( chatwin, A_BOLD );
-			mvwprintw( chatwin, i + 1, 2, "%s:", s->buf[ pos + i ] + 1 );
+			mvwprintw( chatwin, i + 1, 2, "%s:", s->buf[ (pos + i) % BUF_SIZE ] + 1 );
 			wattroff( chatwin, A_BOLD );
 		}
 		else
 		{
-			mvwprintw( chatwin, i + 1, 2, " %s", s->buf[ pos + i ] );
+			mvwprintw( chatwin, i + 1, 2, " %s", s->buf[ (pos + i) % BUF_SIZE ] );
 		}
     }
     wrefresh( chatwin );
@@ -431,15 +438,35 @@ int print_buf( struct session *s, struct user *u, WINDOW* chatwin )
 
 int update_buf( struct session *s, struct user *u )
 {
-    //dude could you please replace this with a linked list structure or something better
-    //method needs revising, espeacially because of potential seg fault( free > BUF_SIZE )
+	char *temp;
+	
+	if( s->free > BUF_SIZE - 2 )
+		s->free = 0;
+	
+	if( s->buf[ s->free ] )
+	{
+		free( s->buf[ s->free ] );
+		free( s->buf[ s->free + 1 ] );
+	}
+
     s->total += u->msg->size;
-    s->buf[ s->free ] = calloc( strlen( u->id ) + 1, 1 );
+
+	temp = calloc( strlen( u->id ) + 1, 1 );
+	if( !temp )
+		exit( -1 );
+    s->buf[ s->free ] = temp
+	
     *s->buf[ s->free ] = '%';
     strcat( s->buf[ s->free++ ], u->id );
-    s->buf[ s->free ] = calloc( u->msg->size + 1, 1 );
-    memcpy( s->buf[ s->free++ ], u->msg->buf, u->msg->size );//memcpy?
+
+	temp = calloc( u->msg->size + 1, 1 );
+	if( !temp )
+		exit( -1 );
+	s->buf[ s->free ] = temp;
+	
+    memcpy( s->buf[ s->free++ ], u->msg->buf, u->msg->size );
     s->end = s->free;
+
     return 0;
 }
 

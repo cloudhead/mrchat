@@ -13,7 +13,7 @@
 #define MSG_ALERT 1
 #define ID_SIZE  16
 #define MSG_SIZE 256
-#define BUF_SIZE 256
+#define BUF_SIZE 1024
 
 
 /* Commands */
