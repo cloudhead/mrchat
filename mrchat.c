@@ -239,7 +239,7 @@ int main( int argc, char *argv[] )
     s.status = network->prep_stat( s.status, &s.stat_count, WIN_STAT_W );
     network->update_stat( s.status, netattr, WIN_STAT_W );
     
-    if( cipher->prep_stat != NULL )
+    if( cipher->prep_stat != NULL ) 
     {
         s.status = cipher->prep_stat( s.status, &s.stat_count, WIN_STAT_W );
         cipher->update_stat( s.status, s.stat_count, ctx, WIN_STAT_W );
@@ -377,25 +377,25 @@ int main( int argc, char *argv[] )
                 goto end;
                 
             default:
-                if( ( i = strlen( u.msg->buf ) ) < MSG_SIZE );
-            {
-                if( i >= u.msg->size )
+                if( ( i = strlen( u.msg->buf ) ) < MSG_SIZE )
                 {
-                    u.msg->buf = realloc( u.msg->buf, MSG_SIZE );
-                    memset( u.msg->buf + u.msg->size, 0, MSG_SIZE - u.msg->size );
-                    u.msg->size = MSG_SIZE;
-                }
+                    if( i >= u.msg->size )
+                    {
+                        u.msg->buf = realloc( u.msg->buf, MSG_SIZE );
+                        memset( u.msg->buf + u.msg->size, 0, MSG_SIZE - u.msg->size );
+                        u.msg->size = MSG_SIZE;
+                    }
                 
-                if( n < i ) shift( u.msg->buf, n, FALSE );
-                u.msg->buf[ n++ ] = c;
-                update_status( &s, statwin );
-                mvwaddstr( msgwin, 1, 2, u.msg->buf );
-                wrefresh( msgwin );
-            }
+                    if( n < i ) shift( u.msg->buf, n, FALSE );
+                    u.msg->buf[ n++ ] = c;
+                    update_status( &s, statwin );
+                    mvwaddstr( msgwin, 1, 2, u.msg->buf );
+                    wrefresh( msgwin );
+                }
         }
     }
     
-    /* END */
+/* END */
 end:
     network->close( netattr );
     endwin();
