@@ -433,15 +433,12 @@ int print_buf( struct session *s, struct user *u, WINDOW* chatwin )
 
 int update_buf( struct session *s, struct user *u )
 {
-    /*
-        TODO: Convert to linked-list
-    */
     s->total += u->msg->size;
-    s->buf[ s->free ] = calloc( strlen( u->id ) + 1, 1 );
+    CALLOC( s->buf[ s->free ], strlen( u->id ) + 1, 1 );
     *s->buf[ s->free ] = '%';
     strcat( s->buf[ s->free++ ], u->id );
-    s->buf[ s->free ] = calloc( u->msg->size + 1, 1 );
-    memcpy( s->buf[ s->free++ ], u->msg->buf, u->msg->size );//memcpy?
+    CALLOC( s->buf[ s->free ], u->msg->size + 1, 1 );
+    memcpy( s->buf[ s->free++ ], u->msg->buf, u->msg->size );
     s->end = s->free;
     
     return 0;
